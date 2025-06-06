@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wave Teams</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: black;
+      overflow: hidden;
+      font-family: 'Fira Code', monospace;
+      color: #ffffff;
+    }
+    .stars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: black;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s infinite ease-in-out;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    .container {
+      position: relative;
+      display: flex;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      flex-direction: row;
+      z-index: 1;
+    }
+    .terminal {
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 20px;
+      padding: 30px;
+      width: 800px;
+      height: 500px;
+      box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+      animation: float 6s ease-in-out infinite;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .title {
+      font-size: 1rem;
+      white-space: pre;
+      font-weight: bold;
+      color: white;
+      text-shadow: 0 0 10px white, 0 0 20px #00f;
+      text-align: center;
+    }
+    .console {
+      background: black;
+      padding: 20px;
+      border-radius: 10px;
+      flex-grow: 1;
+      margin-top: 20px;
+      overflow-y: auto;
+      font-size: 1rem;
+      color: white;
+    }
+    .input {
+      background: black;
+      border: none;
+      color: white;
+      font-family: 'Fira Code', monospace;
+      font-size: 1rem;
+      padding: 10px;
+      outline: none;
+      width: 100%;
+    }
+    .output a {
+      font-weight: bold;
+      color: #ffffff;
+      text-decoration: none;
+    }
+    .output a:hover {
+      text-decoration: underline;
+    }
+    .help {
+      margin-left: 40px;
+      color: #ffffff;
+      background: rgba(0,0,0,0.5);
+      padding: 20px;
+      border-radius: 20px;
+      height: 400px;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    #preloader {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: black;
+      color: #00ffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div id="preloader">Проверка DDOS...</div>
+  <div class="stars" id="stars"></div>
+  <div class="container" style="display: none;" id="mainContent">
+    <div class="terminal">
+      <div class="title">  
+██╗    ██╗ █████╗ ██╗   ██╗███████╗    ████████╗███████╗ █████╗ ███╗   ███╗███████╗
+██║    ██║██╔══██╗██║   ██║██╔════╝    ╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██╔════╝
+██║ █╗ ██║███████║██║   ██║█████╗         ██║   █████╗  ███████║██╔████╔██║█████╗  
+██║███╗██║██╔══██║╚██╗ ██╔╝██╔══╝         ██║   ██╔══╝  ██╔══██║██║╚██╔╝██║██╔══╝  
+╚███╔███╔╝██║  ██║ ╚████╔╝ ███████╗       ██║   ███████╗██║  ██║██║ ╚═╝ ██║███████╗
+ ╚══╝╚══╝ ╚═╝  ╚═╝  ╚═══╝  ╚══════╝       ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
+      </div>
+      <div class="console" id="console">
+        <div>> <span class="input">Введите команду. Наберите !help</span> для списка доступных команд.</div>
+      </div>
+      <input id="commandInput" type="text" class="input" autofocus onkeydown="handleKey(event)" />
+    </div>
+    <div class="help">
+      <strong>!help</strong> - список команд<br><br>
+      <strong>!discord</strong><br>
+      <strong>!telegram</strong><br>
+      <strong>!owner</strong><br>
+      <strong>!youtube</strong><br>
+      <strong>!info</strong><br>
+      <strong>!rules</strong><br>
+      <strong>!buy</strong>
+    </div>
+  </div>
+
+  <script>
+    const consoleDiv = document.getElementById('console');
+    const inputField = document.getElementById('commandInput');
+    const commands = {
+      '!help': () => print(`\nДоступные команды: !discord !telegram !owner !youtube !info !rules !buy`),
+      '!discord': () => print(`<a href="https://discord.gg/Q5z5dnHYSv">https://discord.gg/Q5z5dnHYSv</a>`),
+      '!telegram': () => print(`<a href="https://t.me/WaweRat2837">https://t.me/WaweRat2837</a>`),
+      '!owner': () => print(`<a href="https://t.me/anyta_2837">https://t.me/anyta_2837</a>`),
+      '!youtube': () => print(`<a href="https://www.youtube.com/@Anytka2837">https://www.youtube.com/@Anytka2837</a>`),
+      '!info': () => print(`Привет дорогой друг! на данном сайте ты можешь найти ссылки на наш дискорд/телеграмм канал, там будут все утилиты и программы, так же у нас очень общительный и приятный чат, чтобы связаться со мной, мой тг (@anyta_2837) мой дс (balbes2837) надеюсь тебе все понравиться, Удачи юный хакер!`),
+      '!rules': () => print(`1: в чатах не пытаться скинуть вирус или обмануть = бан\n2: не делать рекламу своего сайта, телеграмм канала, или другое = бан\n3: не кидать детскую порнографию = бан\n4: админ или создатель имеет оставить за собой право в любой момент без пояснения причины дать бан (можете писать в поддержку чтобы узнать подробности @anyta_2837)\n5: на рынке не обманывать = пермамент бан + клеймо обманщика на всю жизнь\n6: спам/ддос/снос/ угрозы админам или же создателю без шуточного смысла = бан`),
+      '!buy': () => print(`Привет, тут ты можешь увидеть что продается:\n\nSheetExploit - цена для каждого разная\nLiberiumExploit - цена для каждого разная\nреклама - зависит от срока и как часто ее обновлять\nпокупка юзеров - 1 юзер стоит от 60 руб (подробности в дискорд канале)\nGhost Rat - временно не доступна (обновление) - $40\nWave Rat - временно отключена (исправление багов) можно купить заранее - $50\nнаписать сайт\программу\для вас (так же зависит от работы и сложности)\nкрипт - $10-15 подробности можно узнать лично\nкряк программы (беру 50% от цены программы которую нужно крякнуть, подробности можно узнать лично)`)
+    };
+
+    function handleKey(event) {
+      if (event.key === 'Enter') {
+        const input = event.target.value.trim();
+        consoleDiv.innerHTML = '';
+        print(`> ${input}`);
+        if (commands[input]) {
+          setTimeout(() => commands[input](), 300);
+        } else {
+          setTimeout(() => print(`Команда не найдена. Наберите !help`), 300);
+        }
+        event.target.value = '';
+      }
+    }
+
+    function print(text) {
+      const line = document.createElement('div');
+      line.innerHTML = text;
+      consoleDiv.appendChild(line);
+      consoleDiv.scrollTop = consoleDiv.scrollHeight;
+    }
+
+    window.onload = () => {
+      setTimeout(() => {
+        document.getElementById('preloader').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'flex';
+      }, 2000);
+
+      const starContainer = document.getElementById('stars');
+      for (let i = 0; i < 200; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.left = `${Math.random() * 100}%`;
+        starContainer.appendChild(star);
+      }
+    }
+  </script>
+</body>
+</html>
